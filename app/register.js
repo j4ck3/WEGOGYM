@@ -1,35 +1,23 @@
-import { Link } from 'expo-router'
-import { View, Text, StyleSheet } from 'react-native'
-import { TextInput } from 'react-native-gesture-handler';
-
-const Index = () => {
-    // const { user } = useAuth();
-
-    // if (user) {
-    //     return <Redirect href="/home" />;
-    // }
-
+import { View, Text, StyleSheet, TextInput } from 'react-native';
+import { Link } from 'expo-router';
+const Register = () => {
     return (
         <View style={styles.container}>
-            <Text>Login</Text>
+            <Text>Register new account</Text>
+            <TextInput style={styles.textInput} placeholder='Username' />
             <TextInput style={styles.textInput} placeholder='Email' />
             <TextInput style={styles.textInput} placeholder='Password' secureTextEntry={true} />
             {/* <Button onPress={login} /> */}
-
-            <Text style={{ margin: 10 }}>Or</Text>
-            <Link style={styles.link} href="/register">Register</Link>
-            <Link style={styles.link} href="/home">Log in as guest</Link>
+            <Link style={styles.link} href="/home">Login</Link>
         </View>
     );
-}
-export default Index;
-
+};
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f0f0f0'
+        backgroundColor: '#f0f0f0',
     },
     link: {
         fontSize: 20,
@@ -49,3 +37,5 @@ const styles = StyleSheet.create({
     },
 
 })
+
+export default Register;
