@@ -1,25 +1,17 @@
 import { Link } from 'expo-router'
 import { View, Text, StyleSheet } from 'react-native'
-import { TextInput } from 'react-native-gesture-handler';
-
+import { AuthProvider } from './contexts/authContext';
 const Index = () => {
-    // const { user } = useAuth();
-
-    // if (user) {
-    //     return <Redirect href="/home" />;
-    // }
 
     return (
-        <View style={styles.container}>
-            <Text>Login</Text>
-            <TextInput style={styles.textInput} placeholder='Email' />
-            <TextInput style={styles.textInput} placeholder='Password' secureTextEntry={true} />
-            {/* <Button onPress={login} /> */}
-
-            <Text style={{ margin: 10 }}>Or</Text>
-            <Link style={styles.link} href="/register">Register</Link>
-            <Link style={styles.link} href="/home">Log in as guest</Link>
-        </View>
+        <AuthProvider>
+            <View style={styles.container}>
+                <Text style={styles.header}>WEGOGYM</Text>
+                <Link style={styles.button} href="/login">Login</Link>
+                <Link style={styles.button} href="/register">Register</Link>
+                <Link style={styles.button} href="/home">Log in as guest</Link>
+            </View>
+        </AuthProvider>
     );
 }
 export default Index;
@@ -29,23 +21,26 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#f0f0f0'
+        backgroundColor: 'black'
     },
-    link: {
-        fontSize: 20,
+    header: {
+        color: 'white',
         fontWeight: 'bold',
-        color: 'blue',
+        fontSize: 30,
+        marginBottom: 10,
     },
-    textInput: {
+    button: {
         width: 250,
         height: 40,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 5,
+        borderWidth: 5,
+        borderRadius: 50,
         paddingLeft: 10,
         fontSize: 16,
-        color: '#333',
+        color: 'black',
         margin: 5,
+        textAlign: 'center',
+        lineHeight: 40,
+        backgroundColor: 'white',
     },
 
 })

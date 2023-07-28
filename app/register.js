@@ -4,7 +4,7 @@ const Register = () => {
     return (
         <View style={styles.container}>
             <Text>Register new account</Text>
-            <TextInput style={styles.textInput} placeholder='Username' />
+            <TextInput style={styles.textInput} placeholder='User Name' />
             <TextInput style={styles.textInput} placeholder='Email' />
             <TextInput style={styles.textInput} placeholder='Password' secureTextEntry={true} />
             {/* <Button onPress={login} /> */}

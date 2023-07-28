@@ -13,8 +13,8 @@ export default () => {
             <Tabs.Screen
                 name="list"
                 options={{
-                    tabBarLabel: 'List',
-                    headerTitle: 'Cool List',
+                    tabBarLabel: 'Account',
+                    headerTitle: 'Your Account',
                 }}
             />
         </Tabs>
