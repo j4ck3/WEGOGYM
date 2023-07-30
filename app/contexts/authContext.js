@@ -11,9 +11,10 @@ import * as SecureStorage from 'expo-secure-store';
 
 
 export const TOKEN_KEY = 'my-jwt';
-export const API_URI = 'localhost:5000'
+export const API_URI = 'http://localhost:5000'
 
 const AuthContext = createContext({});
+
 export const useAuth = () =>  {
     return useContext(AuthContext)
 };
@@ -26,6 +27,8 @@ export const AuthProvider = ({children}) => {
             const token = await SecureStorage.getItemAsync(TOKEN_KEY);
 
             if(token){
+                axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
                 setAuthState({
                     token: token, 
                     authenticated: true
@@ -36,19 +39,23 @@ export const AuthProvider = ({children}) => {
     }, [])
 
     // REGISTER --------------------------------
-    const register = async(email, password ) => {
+    const register = async (email, password, userName) => {
         try {
-            return await axios.post(`${API_URI}/signup`, {email, password})
-        }catch(e) {
-            return {error: true, msg: (e).response.data.text};
-        }
+            const response = await axios.post(`${API_URI}/authentication/signup`, { email, userName, password });
+            return response.data;
+
+          } catch (error) {
+            console.error('An error occurred:', error);
+
+            return { error: true, message: 'An error occurred during registration.' };
+          }
     }
 
 
     // LOGIN --------------------------------
-    const login = async(email, password ) => {
+    const login = async (email, password ) => {
         try {
-            const result = await axios.post(`${API_URI}/signin`, {email, password})
+            const result = await axios.post(`${API_URI}/authentication/signin`, {email, password})
             setAuthState({
                 token: result.data.accessToken, 
                 authenticated: true
@@ -56,10 +63,10 @@ export const AuthProvider = ({children}) => {
             axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.accessToken}`
 
             await SecureStorage.setItemAsync(TOKEN_KEY, result.data.accessToken)
-            return result;
+            return result.data;
 
         }catch(e) {
-            return {error: true, msg: (e).response.data.text};
+            return {error: true, msg: response.data, e};
         }
     }
 

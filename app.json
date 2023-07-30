@@ -5,6 +5,9 @@
       "bundler": "metro"
     },
     "name": "WEGOGYM",
-    "slug": "WEGOGYM"
+    "slug": "WEGOGYM",
+    "extra": {
+      "backendUrl": "http://localhost:5000"
+    }
   }
 }

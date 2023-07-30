@@ -5,13 +5,13 @@ const Index = () => {
 
     return (
         <AuthProvider>
-            <View style={styles.container}>
-                <Text style={styles.header}>WEGOGYM</Text>
-                <Link style={styles.button} href="/login">Login</Link>
-                <Link style={styles.button} href="/register">Register</Link>
-                <Link style={styles.button} href="/home">Log in as guest</Link>
-            </View>
-        </AuthProvider>
+          <View style={styles.container}>
+            <Text style={styles.header}>WEGOGYM</Text>
+            <Link style={styles.button} href="/login">Login</Link>
+            <Link style={styles.button} href="/register">Register</Link>
+            <Link style={styles.button} href="/home">Log in as guest</Link>
+          </View>
+      </AuthProvider>
     );
 }
 export default Index;

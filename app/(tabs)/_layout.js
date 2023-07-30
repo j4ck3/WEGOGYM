@@ -1,4 +1,5 @@
 import { Tabs } from 'expo-router';
+import { Text } from 'react-native';
 
 export default () => {
     return (
@@ -8,6 +9,7 @@ export default () => {
                 options={{
                     tabBarLabel: 'Home',
                     headerTitle: 'Home Screen',
+                    tabBarIcon: () => <Text>🏠</Text>
                 }}
             />
             <Tabs.Screen
@@ -15,6 +17,7 @@ export default () => {
                 options={{
                     tabBarLabel: 'Account',
                     headerTitle: 'Your Account',
+                    tabBarIcon: () => <Text>💅</Text>
                 }}
             />
         </Tabs>
