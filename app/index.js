@@ -1,17 +1,15 @@
 import { Link } from 'expo-router'
 import { View, Text, StyleSheet } from 'react-native'
-import { AuthProvider } from './contexts/authContext';
-const Index = () => {
 
+
+const Index = () => {
     return (
-        <AuthProvider>
-          <View style={styles.container}>
+        <View style={styles.container}>
             <Text style={styles.header}>WEGOGYM</Text>
             <Link style={styles.button} href="/login">Login</Link>
-            <Link style={styles.button} href="/register">Register</Link>
+            <Link style={styles.button} href="/signup">Register</Link>
             <Link style={styles.button} href="/home">Log in as guest</Link>
-          </View>
-      </AuthProvider>
+        </View>
     );
 }
 export default Index;

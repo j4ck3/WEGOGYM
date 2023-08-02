@@ -1,16 +1,25 @@
 import { Stack } from 'expo-router';
-
-const StackLayout = () => {
+import { AuthProvider } from './contexts/authContext';
+const Root = () => {
     return (
-        <Stack>
-            <Stack.Screen
-                name="(tabs)"
-                options={{
-                    headerShown: false,
+        <AuthProvider>
+            <Stack
+                screenOptions={{
+                    headerTitle: '',
+                    headerTransparent: true,
+                    headerTintColor: 'white'
                 }}
-            />
-        </Stack>
+            >
+                <Stack.Screen
+                    name="(tabs)"
+                    options={{
+                        headerShown: false,
+                    }}
+                />
+            </Stack>
+        </AuthProvider>
+
     );
 };
 
-export default StackLayout;
+export default Root;

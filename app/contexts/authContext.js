@@ -1,90 +1,122 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from 'axios';
 import * as SecureStorage from 'expo-secure-store';
-
-// interface AuthProps {
-//     authState?: {token: string | null, authenticated: boolean | null };
-//     onRegister?: (email: string, userName: string, password: string) => Promise<any>;
-//     onLogin?: (email: string, userName: string | null, password: string) => Promise<any>;
-//     onLogout?: () => Promise<any>;
-// }
-
-
+import { useSegments, useRouter} from 'expo-router';
 export const TOKEN_KEY = 'my-jwt';
-export const API_URI = 'http://localhost:5000'
+export const API_URI = 'http://10.0.2.2:5000'
 
 const AuthContext = createContext({});
 
-export const useAuth = () =>  {
+export const useAuth = () => {
     return useContext(AuthContext)
 };
 
-export const AuthProvider = ({children}) => {
-    const [authState, setAuthState] = useState({token: '', authenticated: false})
+// This hook will protect the route access based on user authentication.
+function useProtectedRoute(user) {
+    const segments = useSegments();
+    const router = useRouter();
+
+    useEffect(() => {
+      const inAuthGroup = segments[0] === '(auth)';
+  
+      if (
+        // If the user is not signed in and the initial segment is not anything in the auth group.
+        !user &&
+        !inAuthGroup
+      ) {
+        // Redirect to the sign-in page.
+        router.replace('/sign-in');
+      } else if (user && inAuthGroup) {
+        // Redirect away from the sign-in page.
+        router.replace('/(tabs)/home');
+      }
+    }, [user, segments]);
+  }
+  
+
+export const AuthProvider = ({ children }) => {
+    const [authState, setAuthState] = useState({ token: '', authenticated: false})
+    const [user, setUser] = useState({}| null);
+
+    useProtectedRoute(user);
 
     useEffect(() => {
         const loadToken = async () => {
             const token = await SecureStorage.getItemAsync(TOKEN_KEY);
 
-            if(token){
+            if (token) {
                 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
                 setAuthState({
-                    token: token, 
-                    authenticated: true
+                    token: token,
+                    authenticated: true,
                 })
+                setUser({email: 'sdf'})
             }
         }
         loadToken()
     }, [])
 
+
+
     // REGISTER --------------------------------
-    const register = async (email, password, userName) => {
+    const signup = async (email, password, userName) => {
         try {
-            const response = await axios.post(`${API_URI}/authentication/signup`, { email, userName, password });
-            return response.data;
+            const res = await axios.post(`${API_URI}/authentication/signup`, { email, userName, password });
+            return res.data;
 
-          } catch (error) {
-            console.error('An error occurred:', error);
+        } catch (error) {
+            console.error('An error OCCURRED:', error);
 
-            return { error: true, message: 'An error occurred during registration.' };
-          }
+            return { error: true, msg: error.response.data };
+        }
     }
 
 
     // LOGIN --------------------------------
-    const login = async (email, password ) => {
+    const signin = async (email, password) => {
         try {
-            const result = await axios.post(`${API_URI}/authentication/signin`, {email, password})
+            const res = await axios.post(`${API_URI}/authentication/signin`, { email, password })
             setAuthState({
-                token: result.data.accessToken, 
+                token: res.data.accessToken,
                 authenticated: true
             })
-            axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.accessToken}`
+            setUser({
+                email: email,
+                userName: res.data.user.userName
+            })
 
             await SecureStorage.setItemAsync(TOKEN_KEY, result.data.accessToken)
-            return result.data;
 
-        }catch(e) {
-            return {error: true, msg: response.data, e};
+        } catch (error) {
+            return { error: true, msg: error.response.data};
+        } finally {
+            // This block will execute after the try or catch block is finished
+            // If an error occurred, this will still set the state and headers correctly.
+            // If no error occurred, this will be a no-op.
+    
+            // Set the headers, even if an error occurred in the try block.
+            // This ensures that the headers are set correctly in both success and error cases.
+            axios.defaults.headers.common['Authorization'] = `Bearer ${authState.token || ''}`;
+    
+            // Update the authentication state even if an error occurred in the try block.
+            // This is to keep the state consistent with the headers.
+            setAuthState((prevState) => ({
+                ...prevState,
+                authenticated: !!prevState.token, // Set authenticated to true if token exists, false otherwise
+            }));
         }
     }
 
     // LOGOUT --------------------------------
-    const logout = async () => {
+    const signout = async () => {
         await SecureStorage.deleteItemAsync(TOKEN_KEY);
         axios.defaults.headers.common['Authorization'] = '';
         setAuthState({
-            token: null, 
+            token: null,
             authenticated: false
         })
+        setUser(null)
     }
-    const contextValue = {
-        authState,
-        register,
-        login,
-        logout,
-      };
 
-    return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{authState, user, signup, signin, signout}}>{children}</AuthContext.Provider>
 }

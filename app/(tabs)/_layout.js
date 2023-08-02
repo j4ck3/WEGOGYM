@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import { Text } from 'react-native';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default () => {
     return (
@@ -7,17 +8,18 @@ export default () => {
             <Tabs.Screen
                 name="home"
                 options={{
-                    tabBarLabel: 'Home',
-                    headerTitle: 'Home Screen',
+                    tabBarShowLabel: false,
+                    headerShown: false,
                     tabBarIcon: () => <Text>🏠</Text>
                 }}
             />
             <Tabs.Screen
-                name="list"
+                name="account"
                 options={{
-                    tabBarLabel: 'Account',
-                    headerTitle: 'Your Account',
-                    tabBarIcon: () => <Text>💅</Text>
+                    tabBarShowLabel: false,
+                    tabBarActiveTintColor: 'white',
+                    headerShown: false,
+                    tabBarIcon: () => <MaterialCommunityIcons name="account" size={30} color="black" />
                 }}
             />
         </Tabs>
