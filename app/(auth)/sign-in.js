@@ -1,4 +1,4 @@
-import { Text, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView } from 'react-native';
+import { Text, StyleSheet, TextInput, TouchableOpacity, KeyboardAvoidingView, Overlay, Spinner} from 'react-native';
 import { useState } from 'react'
 import { useRouter } from 'expo-router';
 import { useAuth } from '../contexts/authContext';
@@ -9,16 +9,20 @@ const Login = () => {
     const [error, setError] = useState('');
     const router = useRouter();
     const { signin } = useAuth();
-
+    const [loading, setLoading] = useState(false);
 
 
     const handleLogin = async () => {
         try {
+            setLoading(true)
             const res = await signin(email, password)
             if(res.error == true)
                 setError(res?.msg.text)
 
+
+            setLoading(false)
             } catch (error) {
+                setLoading(false)
                 setError(error.response?.data.text)
             }
           };
@@ -33,6 +37,10 @@ const Login = () => {
             <TouchableOpacity style={styles.button} onPress={ handleLogin }>
                 <Text style={styles.buttonText}>Log In</Text>
             </TouchableOpacity>
+
+            {/* <Overlay isVisible={loading} overlayStyle={{ alignItems: 'center', justifyContent: 'center' }}>
+            </Overlay> */}
+
             <Text style={styles.seperator}>Or</Text>
             <TouchableOpacity style={styles.secondButton} onPress={ () => router.replace('/sign-up') }>
                 <Text style={styles.secondButtonText}>Sign Up</Text>
@@ -104,7 +112,6 @@ const styles = StyleSheet.create({
         margin: 10,
         borderWidth: 2,
         borderColor: 'white',
-
     },
     buttonText: {
         color: 'black',
@@ -114,7 +121,7 @@ const styles = StyleSheet.create({
         lineHeight: 40,
     },
     seperator: {
-        color: 'white'
+        color: '#c3c3c3'
     }
 })
 

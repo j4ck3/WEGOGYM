@@ -56,20 +56,17 @@ export const AuthProvider = ({ children }) => {
         loadToken()
     }, [])
 
+    const update = async (email, userName, description) => {
+        const res = await axios.put(`${API_URI}/users/${user._id}`, { email, userName, description});
+        return res
+    };
 
 
     // REGISTER --------------------------------
     const signup = async (email, password, userName) => {
-        try {
-            const res = await axios.post(`${API_URI}/authentication/signup`, { email, userName, password });
-            return res.data;
-
-        } catch (error) {
-            console.error('An error OCCURRED:', error);
-
-            return { error: true, msg: error.response.data };
-        }
-    }
+        const res = await axios.post(`${API_URI}/authentication/signup`, { email, userName, password });
+        return res; 
+    };
 
 
     // LOGIN --------------------------------
@@ -90,19 +87,14 @@ export const AuthProvider = ({ children }) => {
         } catch (error) {
             return { error: true, msg: error.response.data};
         } finally {
-            // This block will execute after the try or catch block is finished
-            // If an error occurred, this will still set the state and headers correctly.
-            // If no error occurred, this will be a no-op.
-    
             // Set the headers, even if an error occurred in the try block.
             // This ensures that the headers are set correctly in both success and error cases.
             axios.defaults.headers.common['Authorization'] = `Bearer ${authState.token || ''}`;
     
             // Update the authentication state even if an error occurred in the try block.
-            // This is to keep the state consistent with the headers.
             setAuthState((prevState) => ({
                 ...prevState,
-                authenticated: !!prevState.token, // Set authenticated to true if token exists, false otherwise
+                authenticated: !!prevState.token
             }));
         }
     }
@@ -118,5 +110,5 @@ export const AuthProvider = ({ children }) => {
         setUser(null)
     }
 
-    return <AuthContext.Provider value={{authState, user, signup, signin, signout}}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{authState, user, signup, signin, signout, update}}>{children}</AuthContext.Provider>
 }
