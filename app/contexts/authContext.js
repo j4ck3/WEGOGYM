@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from 'axios';
 import * as SecureStorage from 'expo-secure-store';
-import { useSegments, useRouter} from 'expo-router';
+import { useSegments, useRouter } from 'expo-router';
 export const TOKEN_KEY = 'my-jwt';
 export const API_URI = 'http://10.0.2.2:5000'
 
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
                 userName: res.data.user.userName
             })
 
-            await SecureStorage.setItemAsync(TOKEN_KEY, result.data.accessToken)
+            await SecureStorage.setItemAsync(TOKEN_KEY, res.data.accessToken)
 
         } catch (error) {
             return { error: true, msg: error.response.data};
